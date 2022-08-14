@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "Katsudon",
+  "version": "1.0",
+  "descripition": "Sends Leetcode solution to mongoDB",
+  "icons": {
+    "16": "/assets/katsudon_16.png",
+    "48": "/assets/katsudon_48.png",
+    "128": "/assets/katsudon_128.png"
+  },
+  "page_action": {
+    "default_icon": {
+      "16": "/assets/katsudon_16.png",
+      "48": "/assets/katsudon_48.png",
+      "128": "/assets/katsudon_128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://leetcode.com/*"],
+      "js": ["scripts/leetcode.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
