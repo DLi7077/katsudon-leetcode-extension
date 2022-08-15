@@ -67,6 +67,17 @@ const getTimeSpaceDetails = () => {
   };
 };
 
+function getCurrentTabUrl() {
+  var questionUrl = window.location.href;
+  if (questionUrl.endsWith("/submissions/")) {
+    questionUrl = questionUrl.substring(
+      0,
+      questionUrl.lastIndexOf("/submissions/") + 1
+    );
+  }
+  return questionUrl;
+}
+
 //source : https://github.com/QasimWani/LeetHub/blob/main/scripts/leetcode.js
 async function getSolution() {
   /* Get the submission details url from the submission page. */
@@ -144,6 +155,7 @@ const getCodeSubmissionDetails = async () => {
 
   const submissionDetails = {
     ...questionTitleDetails,
+    problem_url: getCurrentTabUrl(),
     problem_difficulty: getDifficulty(),
     problem_description: getDescription(),
     problem_tags: getTags(),
@@ -152,21 +164,29 @@ const getCodeSubmissionDetails = async () => {
     ...timeSpaceDetails,
   };
 
+  console.log(submissionDetails);
+
   return submissionDetails;
 };
 
 async function sendToDatabase(solution_content) {
   const URL = "http://localhost:3001/api/solution/create";
-  return await fetch(URL, {
-    method: "POST",
-    mode: "cors",
-    headers: {
-      "Content-Type": "application/json",
-      // 'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: JSON.stringify(solution_content),
-  }).then((response) => response.json());
+
+  chrome.storage.local.get("user_id", async (user_id) => {
+    await fetch(URL, {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      //attach user_id with submission
+      body: JSON.stringify({ ...user_id, ...solution_content }),
+    })
+      .then((response) => response.json())
+      .then((res) => console.log(res));
+  });
 }
+
 const elementExists = (element) => {
   return element && element.length > 0;
 };
@@ -183,6 +203,7 @@ document.addEventListener("click", async (event) => {
     if (buttonContent === "Submit" && !clickedElement.disabled) {
       console.log("submitted");
       submissionInProgress = true;
+
       var awaitResult = setInterval(async () => {
         //if detail redirect exists, then submission resolved.
         const detailRedirect = document.getElementsByClassName("detail__1Ye5");
@@ -193,11 +214,10 @@ document.addEventListener("click", async (event) => {
           submissionInProgress = false;
 
           const successDiv = document.getElementsByClassName("success__3Ai7");
+
           if (elementExists(successDiv)) {
             const submisson_details = await getCodeSubmissionDetails();
-            await sendToDatabase(submisson_details).then((res) =>
-              console.log(res)
-            );
+            await sendToDatabase(submisson_details);
           } else {
             console.log("Submission failed");
           }

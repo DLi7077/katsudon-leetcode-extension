@@ -1,0 +1,11 @@
+body {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+#status {
+  text-align: center;
+}
