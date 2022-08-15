@@ -8,12 +8,13 @@
     "48": "/assets/katsudon_48.png",
     "128": "/assets/katsudon_128.png"
   },
-  "page_action": {
+  "browser_action": {
     "default_icon": {
       "16": "/assets/katsudon_16.png",
       "48": "/assets/katsudon_48.png",
       "128": "/assets/katsudon_128.png"
-    }
+    },
+    "default_popup": "popup/popup.html"
   },
   "content_scripts": [
     {
@@ -22,5 +23,11 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": ["tabs", "https://*/*", "http://*/*"]
+  "permissions": [
+    "tabs",
+    "https://*/*",
+    "http://*/*",
+    "unlimitedStorage",
+    "storage"
+  ]
 }
