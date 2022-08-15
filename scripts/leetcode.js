@@ -7,8 +7,8 @@ const getQuestionTitle = () => {
     .innerText.split(". ");
 
   return {
-    question_id: questionTitle[0],
-    question_title: questionTitle[1],
+    problem_id: parseInt(questionTitle[0]),
+    problem_title: questionTitle[1],
   };
 };
 
@@ -62,8 +62,8 @@ const getTimeSpaceDetails = () => {
   const memory_in_megabytes = parseFloat(getMetrics(memoryUsageDetails));
 
   return {
-    runtime: runtime_in_milliseconds,
-    memory_usage: memory_in_megabytes,
+    runtime_ms: runtime_in_milliseconds,
+    memory_usage_mb: memory_in_megabytes,
   };
 };
 
@@ -144,17 +144,29 @@ const getCodeSubmissionDetails = async () => {
 
   const submissionDetails = {
     ...questionTitleDetails,
-    question_difficulty: getDifficulty(),
-    question_details: getDescription(),
-    tags: getTags(),
+    problem_difficulty: getDifficulty(),
+    problem_description: getDescription(),
+    problem_tags: getTags(),
     solution_language: getCodingLanguage(),
-    solution: solution,
+    solution_code: solution,
     ...timeSpaceDetails,
   };
 
   return submissionDetails;
 };
 
+async function sendToDatabase(solution_content) {
+  const URL = "http://localhost:3001/api/solution/create";
+  return await fetch(URL, {
+    method: "POST",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: JSON.stringify(solution_content),
+  }).then((response) => response.json());
+}
 const elementExists = (element) => {
   return element && element.length > 0;
 };
@@ -182,9 +194,10 @@ document.addEventListener("click", async (event) => {
 
           const successDiv = document.getElementsByClassName("success__3Ai7");
           if (elementExists(successDiv)) {
-            console.log("Success! Sending to database...");
             const submisson_details = await getCodeSubmissionDetails();
-            console.log(submisson_details);
+            await sendToDatabase(submisson_details).then((res) =>
+              console.log(res)
+            );
           } else {
             console.log("Submission failed");
           }
@@ -193,9 +206,3 @@ document.addEventListener("click", async (event) => {
     }
   }
 });
-
-setTimeout(async () => {
-  console.log("finding code");
-  const c = await getSolution().then((res) => res);
-  console.log(c);
-}, 2000);

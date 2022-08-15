@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Katsudon",
   "version": "1.0",
-  "descripition": "Sends Leetcode solution to mongoDB",
+  "description": "Sends Leetcode solution to mongoDB",
   "icons": {
     "16": "/assets/katsudon_16.png",
     "48": "/assets/katsudon_48.png",
@@ -17,9 +17,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://leetcode.com/*"],
+      "matches": ["https://*/*"],
       "js": ["scripts/leetcode.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "permissions": ["tabs", "https://*/*", "http://*/*"]
 }
