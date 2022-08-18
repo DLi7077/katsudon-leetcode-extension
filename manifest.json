@@ -14,7 +14,7 @@
       "48": "/assets/katsudon_48.png",
       "128": "/assets/katsudon_128.png"
     },
-    "default_popup": "popup/popup.html"
+    "default_popup": "./popup.html"
   },
   "content_scripts": [
     {
