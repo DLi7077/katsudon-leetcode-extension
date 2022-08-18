@@ -58,7 +58,7 @@ async function handleLogin() {
   if (loginAttempt) {
     if (loginAttempt._id) {
       //display based on user logged in
-      chrome.storage.local.set({ user_id: loginAttempt.user_id }, (res) => {
+      chrome.storage.local.set({ user_id: loginAttempt._id }, (res) => {
         localStorage.setItem("logged_in", true);
       });
       changeStatus("Welcome back");
@@ -87,11 +87,3 @@ document.addEventListener("click", async (event) => {
     await handleSignout().then(() => setTimeout(refresh, 100));
   }
 });
-
-// chrome.storage.local.get("user_id", (res) => {
-//   console.log(res.user_id);
-//   if (res.user_id) document.getElementById("content").style.display = "none";
-//   else {
-//     document.getElementById("content").style.display = "block";
-//   }
-// });
