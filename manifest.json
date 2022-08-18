@@ -1,5 +1,5 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name": "Katsudon",
   "version": "1.0",
   "description": "Sends Leetcode solution to mongoDB",
@@ -8,7 +8,7 @@
     "48": "/assets/katsudon_48.png",
     "128": "/assets/katsudon_128.png"
   },
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "/assets/katsudon_16.png",
       "48": "/assets/katsudon_48.png",
@@ -23,7 +23,5 @@
       "run_at": "document_end"
     }
   ],
-  "permissions": [
-    "storage"
-  ]
+  "permissions": ["storage", "unlimitedStorage"]
 }
