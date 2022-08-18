@@ -170,7 +170,7 @@ const getCodeSubmissionDetails = async () => {
 };
 
 async function sendToDatabase(solution_content) {
-  const URL = "http://localhost:3001/api/solution/create";
+  const URL = "https://katsudon-server-v2.herokuapp.com/api/solution/create";
 
   chrome.storage.local.get("user_id", async (user_id) => {
     await fetch(URL, {
