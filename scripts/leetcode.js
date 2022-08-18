@@ -173,6 +173,7 @@ async function sendToDatabase(solution_content) {
   const URL = "https://katsudon-server-v2.herokuapp.com/api/solution/create";
 
   chrome.storage.local.get("user_id", async (user_id) => {
+    console.log(user_id);
     await fetch(URL, {
       method: "POST",
       mode: "cors",

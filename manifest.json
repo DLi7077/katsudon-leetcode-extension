@@ -18,16 +18,14 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://*/*"],
+      "matches": ["https://leetcode.com/problems/*"],
       "js": ["scripts/leetcode.js"],
       "run_at": "document_end"
     }
   ],
   "permissions": [
     "tabs",
-    "https://*/*",
-    "http://*/*",
-    "unlimitedStorage",
+    "https://katsudon-server-v2.herokuapp.com/api/solution/create",
     "storage"
   ]
 }
