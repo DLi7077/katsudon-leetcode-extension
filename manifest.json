@@ -24,7 +24,6 @@
     }
   ],
   "permissions": [
-    "tabs",
     "https://katsudon-server-v2.herokuapp.com/api/solution/create",
     "storage"
   ]
