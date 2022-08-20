@@ -33,7 +33,7 @@ refresh();
  * else set back to login content
  */
 async function userLogin(email, password) {
-  const URL = "http://localhost:3001/api/user/login";
+  const URL = "http://katsudon-server-v2.herokuapp.com/api/user/login";
 
   return await fetch(URL, {
     method: "POST",
