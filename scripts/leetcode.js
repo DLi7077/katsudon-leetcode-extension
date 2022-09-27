@@ -12,6 +12,7 @@ const getQuestionTitle = () => {
   };
 };
 
+
 //Retreives Question Difficulty
 const getDifficulty = () => {
   return document.getElementsByClassName("css-10o4wqw")[0].childNodes[0]

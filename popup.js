@@ -52,7 +52,7 @@ async function handleLogin() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   const loginAttempt = await userLogin(email, password)
-    .then((res) => res.user)
+    .then((res) => res.currentUser)
     .catch(null);
 
   if (loginAttempt) {
