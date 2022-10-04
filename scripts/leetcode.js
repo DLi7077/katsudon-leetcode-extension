@@ -12,7 +12,6 @@ const getQuestionTitle = () => {
   };
 };
 
-
 //Retreives Question Difficulty
 const getDifficulty = () => {
   return document.getElementsByClassName("css-10o4wqw")[0].childNodes[0]
@@ -49,6 +48,11 @@ const getCodingLanguage = () => {
 //Retrieves the Time and Space Complexity
 const getTimeSpaceDetails = () => {
   const submissonStats = document.getElementsByClassName("info__2oQ9");
+  if (!submissonStats.length)
+    return {
+      runtime_ms: null,
+      memory_usage_mb: null,
+    };
   const runtimeDetails = submissonStats[0].innerText;
   const memoryUsageDetails = submissonStats[1].innerText;
 
@@ -165,8 +169,6 @@ const getCodeSubmissionDetails = async () => {
     ...timeSpaceDetails,
   };
 
-  console.log(submissionDetails);
-
   return submissionDetails;
 };
 
@@ -174,7 +176,7 @@ async function sendToDatabase(solution_content) {
   const URL = "https://katsudon-server-v2.herokuapp.com/api/solution/create";
 
   chrome.storage.local.get("user_id", async (user_id) => {
-    // console.log("sending", JSON.stringify({ ...user_id, ...solution_content }));
+    // console.log("sending", { ...user_id, ...solution_content });
     await fetch(URL, {
       method: "POST",
       mode: "cors",
@@ -185,7 +187,8 @@ async function sendToDatabase(solution_content) {
       body: JSON.stringify({ ...user_id, ...solution_content }),
     })
       .then((response) => response.json())
-      .then((res) => console.log(res));
+      .then((res) => console.log(res))
+      .catch(console.error);
   });
 }
 
@@ -193,7 +196,15 @@ const elementExists = (element) => {
   return element && element.length > 0;
 };
 
-var submissionInProgress = false;
+function clickedLegacySubmit(event) {
+  const clickedClass = event.target.className;
+  return (
+    clickedClass === "css-1km43m6-BtnContent e5i1odf0" ||
+    clickedClass === "submit__2ISl css-ieo3pr"
+  );
+}
+
+let submissionInProgress = false;
 
 document.addEventListener("click", async (event) => {
   if (submissionInProgress) {
@@ -202,26 +213,41 @@ document.addEventListener("click", async (event) => {
     const clickedElement = event.target;
     const buttonContent = clickedElement.innerText;
 
+    if (!clickedLegacySubmit(event)) return;
+
     if (buttonContent === "Submit" && !clickedElement.disabled) {
       console.log("submitted");
       submissionInProgress = true;
 
       var awaitResult = setInterval(async () => {
         //if detail redirect exists, then submission resolved.
-        const detailRedirect = document.getElementsByClassName("detail__1Ye5");
-        const submittedTooSoon = document.getElementsByClassName("error__qo2i");
+        const loading = document.getElementsByTagName("rect");
 
-        if (elementExists(detailRedirect) || elementExists(submittedTooSoon)) {
+        if (!loading.length) {
           clearInterval(awaitResult);
           submissionInProgress = false;
 
           const successDiv = document.getElementsByClassName("success__3Ai7");
 
-          if (elementExists(successDiv)) {
+          const submittedTooSoon =
+            document.getElementsByClassName("error__qo2i");
+
+          if (!elementExists(submittedTooSoon)) {
             const submisson_details = await getCodeSubmissionDetails();
-            await sendToDatabase(submisson_details);
+            const submissionFailed = !elementExists(successDiv);
+            const errorCode = () => {
+              const error = document.getElementsByClassName("error__10k9");
+
+              return error.length ? { error: error[0].innerText } : {};
+            };
+
+            await sendToDatabase({
+              ...submisson_details,
+              failed: submissionFailed,
+              ...errorCode(),
+            });
           } else {
-            console.log("Submission failed");
+            console.log("submission failed for legacy scrape");
           }
         }
       }, 1000);
